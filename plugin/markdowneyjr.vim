@@ -254,7 +254,7 @@ let s:action_maker_abstract =
 \{
     \'class_name'           :'action_maker_abstract',
     \'repeated_call'        :0,
-    \'time'                 :10000,
+    \'time'                 :1000,
     \'timer'                :0,
     \'action_start'         :0,
     \'action_end'           :0,
