@@ -8,11 +8,11 @@ Markdown formatting with simple keystrokes.
 Table of contents
 -----------------
 
-+ [Description](Description Below)
-+ [User Guide](User Guide Wiki)
-+ [Customization Guide](Customization Guide Wiki)
-+ [Contacts](Contacts Wiki)
-+ [Navigation Bar]()
++ [Description](https://github.com/boson-joe/markdowneyJR#description)
++ [User Guide](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-User-Guide)
++ [Customization Guide](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Customization-Guide)
++ [Contacts](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts)
++ [Navigation Bar](https://github.com/boson-joe/markdowneyJR#navigation-bar)
 
 -----
 
@@ -34,6 +34,7 @@ There is no need to set remaps for all the formatting options - you can define j
 
 ![Making links gif](/home/admin/.vim/markdownify/Img/Making_links_gif)
 
+
 At the moment I can handle basic [basic markdown syntax](https://www.markdownguide.org/basic-syntax/) for you, but if you [write my devs](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts), they would be happy to introduce more features.
 
 Navigation Bar
@@ -48,5 +49,5 @@ Navigation Bar
 
 -----
 
-[Go up](Top of the page)
+[Go up](https://github.com/boson-joe/markdowneyJR#markdowneyjr)
 
