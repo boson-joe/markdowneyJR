@@ -1,0 +1,55 @@
+*markdowneyjr_main.txt* main doc page for MarkdowneyJr Vim plugin.
+*markdowneyjr*
+
+     __  __            _       _                                    _         ~
+    |  \/  | __ _ _ __| | ____| | _____      ___ __   ___ _   _    | |_ __    ~
+    | |\/| |/ _` | '__| |/ / _` |/ _ \ \ /\ / / '_ \ / _ \ | | |_  | | '__|   ~
+    | |  | | (_| | |  |   < (_| | (_) \ V  V /| | | |  __/ |_| | |_| | |      ~
+    |_|  |_|\__,_|_|  |_|\_\__,_|\___/ \_/\_/ |_| |_|\___|\__, |\___/|_|      ~
+                                                          |___/               ~
+
+
+              Format Markdown files with simple keystrokes in Vim. 
+
+                           developed by boson joe
+                        https://github.com/boson-joe
+
+
+===============================================================================
+
+To find out how to use the plugin see a brief |MDJUserGuide|.
+
+To learn more about the plugin please refer to the |MDJSections| at the end of 
+this file.
+
+To see the license this plugin is distributed on go to |MDJLicense|.
+
+===============================================================================
+Hi!
+
+My name is Markdowney Jr, nice to meet you! I am a Vim plugin that makes 
+editing markdown files easy using simple keystrokes. Depending on the 
+formatting option, I can do transformations on visual selection, line range or 
+motion (like `3wd`, for example) or combinations of those. Hit a keystroke 
+once - and transformation is made. If you then hit the same keystroke once or 
+multiple times again, I will toggle through options for a particular 
+transformation and change the text accordingly. For example, if you select a 
+word and hit a keystroke responsible for emphasis multiple times, I  will make 
+selected text cursive, bold and then both, and once again, toggling between 
+the options. Please refer to the |MDJUserGuide| to see how we can interact.
+
+There is no need to set remaps for all the formatting options - you can define 
+just two remaps in your vimrc, and I will take care of the rest. In case you 
+don't want to set any remaps at all, I can give you default ones. You can also 
+remap any or all formatting options to your liking. To see how you can set 
+remaps and customize your experience please refer to the |MDJCustomization|.
+
+
+
+===============================================================================
+Sections                                                          *MDJSections*
+
+1.--------------------|MDJUserGuide|
+2.----------------|MDJCustomization|
+3.----------------------|MDJLicense|
+

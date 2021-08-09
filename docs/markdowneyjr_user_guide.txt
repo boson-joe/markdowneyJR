@@ -1,0 +1,141 @@
+*markdowneyjr_user_guide.txt* User guide for MarkdowneyJr Vim plugin.
+*MDJUserGuide*
+
+===============================================================================
+Table of contents
+
+* Remaps-------------------------------------------------------|MDJRemaps|
+* Formatting-----------------------------------------------|MDJFormatting|
+* A little bit more advanced remaps------------------------|MDJMoreRemaps|
+
+
+===============================================================================
+Remaps                                                              *MDJRemaps*
+
+Markdown has a few syntactical rules for formatting text, and the plugin 
+provides separate commands for different rules. You don't need to remap the 
+commands (although you can, if you want), all you need to do to start using the 
+plugin is to define one normal and one visual remaps for something that looks 
+like <Plug>MarkdowneyJrLeader. You can map this thing to anything you want in 
+the way you set your other remaps. For example, you can write the following in 
+your vimrc:
+
+    :nmap <leader>m <Plug>MarkdowneyJrLeader
+    :vmap <leader>m <Plug>MarkdowneyJrLeader
+
+The above would set the "<plugin's leader>" (lets call it that way further on) 
+to <leader>m. After that you will need to prepend all the plugins keys with this 
+stroke. By the way, the above mentioned remaps are used by the plugin as 
+defaults in case you decide to omit this step and remap nothing, provided that 
+you haven't remapped <leader>m to something else - in such a case keystrokes 
+won't work, sorry.
+
+You can also remap particular commands to your liking - please see the relevant 
+section below.
+
+
+===============================================================================
+Formatting                                                      *MDJFormatting*
+
+Below is the list of all available formatting options at the moment. Please 
+remember that the plugin toggles between the options when you hit the same 
+stroke multiple times. When selection or motion is given, or you accidentally 
+moved your cursor to the other place, you don't need to select the text once 
+again or do anything else to toggle - just repeat the keystroke (you will 
+probably need to finish the repeating stroke with Enter) in a relevantly short 
+time after the first stroke and the plugin would figure out what to do.
+
+Emphasise text (cursive, bold or both):---------------------------*MDJEmphasis*
+
+    <plugin's leader>e in normal or visual mode.
+
+Works either on text selection or motion (e.g. <plugin's leader>eiw).
+
+Make line a header (either normal ones or alternative):-------------*MDJHeader*
+
+    <plugin's leader>e in normal mode.
+
+Works on a current line. 
+It will delete a header that already exists for this line.
+
+Put blockqoutes:-----------------------------------------------*MDJBlockquotes*
+
+	<plugin's leader>b in normal or visual mode.
+	
+Works on each selected line or on a range of lines 
+(e.g. 3<plugin's leader>b in normal mode).
+It will add additional blockquote after any subsequent toggles, but without a 
+space after it.
+
+Make unordered list:-------------------------------------------------*MDJListU*
+
+    <plugin's leader>u in normal or visual mode.
+    
+Works on each selected line or on a range of lines 
+(e.g. 3<plugin'u leader>u in normal mode).
+
+Make ordered list:---------------------------------------------------*MDJListO*
+
+    <plugin's leader>o in normal or visual mode.
+    
+Works on each selected line or on a range of lines 
+(e.g. 3<plugin'o leader>o in normal mode).
+
+Lists are particularly interesting as the plugin takes into account already 
+existing lists right next to the place where you  want to make a new one. 
+It will toggle between different indentation levels that are already in 
+an existing list, and in case of ordered list it will also adjust numeration. 
+If there is no adjacent list, the plugin would toggle between current level of 
+indentation and with one additional tab (four spaces).
+
+Insert regular or image link:-----------------------------------------*MDJLink*
+
+    <plugin's leader>l in normal or visual mode.
+    
+Works either on text selection or motion 
+(e.g. <plugin's leader>l2w).
+
+An interesting thing about links is that the plugin is trying to transform 
+the text being selected for the transformation into an absolute path to a file 
+and use this path as a link. For regular files the directory of the current file 
+being edited is encompassed, for images - a directory '/Img' in the directory of 
+the current file. The selected text is becoming a name of such  a file. 
+YOU CAN CHANGE THIS BEHAVIOUR. Please visit the |MDJCustomization| to see how.
+
+
+===============================================================================
+A little bit more advanced remaps                               *MDJMoreRemaps*
+
+You can remap individual commands if you want to. Here is a list of what you 
+need to remap in such a case 
+(don't forget to change <Your remap> with actual remaps):
+
+* Links
+
+vnoremap <Your remap> :<c-u>call MARKDOWNEYJR_OperatorLink(visualmode())<cr>
+nnoremap <Your remap> :set operatorfunc=MARKDOWNEYJR_OperatorLink<cr>g@
+
+* Emphasis
+
+vnoremap <Your remap> :<c-u>call MARKDOWNEYJR_OperatorEphasis(visualmode())<cr>
+nnoremap <Your remap> :set operatorfunc=MARKDOWNEYJR_OperatorEphasis<cr>g@
+
+* Header
+
+nnoremap <Your remap> :MARKDOWNEYJRhd<cr>
+
+* Blockquote
+
+vnoremap <Your remap> :MARKDOWNEYJRbq<cr>
+nnoremap <Your remap> :MARKDOWNEYJRbq<cr>
+
+* Unordered list
+
+vnoremap <Your remap> :MARKDOWNEYJRul<cr>
+nnoremap <Your remap> :MARKDOWNEYJRul<cr>
+   
+* Ordered list
+
+vnoremap <Your remap> :MARKDOWNEYJRol<cr>
+nnoremap <Your remap> :MARKDOWNEYJRol<cr>
+

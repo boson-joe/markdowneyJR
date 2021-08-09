@@ -1,0 +1,62 @@
+*markdowneyjr_customization.txt* 
+Customization guide for MarkdowneyJr Vim plugin.
+*MDJCustomization*
+
+===============================================================================
+Table of contents
+
+* Links contents------------------------------------------------|MDJLinks|
+* Remaps-------------------------------------------------|MDJCustomRemaps|
+
+===============================================================================
+Links contents                                                       *MDJLinks*
+
+When the plugin transforms text into markdown links, it uses functions to 
+determine which path to prepend to the resulting filename. By default, 
+the plugin sets it to the directory of the file being edited for regular links, 
+and '/Img' directory in the directory of the file being edited for image links. 
+You can either turn it off if you don't want to bother with defining your own 
+functions (there will be just an empty space in a place where the path goes), 
+or, well, define your own functions.
+
+To make the plugin put nothing in place where path goes, you need to define one 
+or both of the following variables in your vimrc:
+
+    g:MARKDOWNEYJR_no_URL - for regular links,
+    g:MARKDOWNEYJR_no_IMG_link - for image links.
+
+You can initialize it to anything.
+
+To actually change the contents of the path, you need to do two things:
+
+1) Define functions that would return a string that is the path to the file. 
+Don't let it include the file name itself, unless that is what you want it. 
+For example, you can do write something like that in you vimrc:
+
+       function! MARKDOWNEYJRDeterminePathForALink()
+           return expand("%:p:h")
+       endfunction
+
+This will return a path to a directory of a file being edited.
+
+2) After functions are defined, you need to set a couple of global variables 
+to let the plugin know that you want to use your own custom functions. 
+The variables are:
+
+    g:MARKDOWNEYJR_GetPathForUrl - for regular links,
+    g:MARKDOWNEYJR_GetPathForImg - for image links.
+
+You need to initialize them with :h Funcref to your custom functions. You could 
+write something like that in your vimrc:
+
+    let g:MARKDOWNEYJR_GetPathForUrl = 
+                              function("MARKDOWNEYJRDeterminePathForALink")
+
+After that you will have all regular links in a form that you want. 
+Repeat the same for image links, if you'd like to.
+
+===============================================================================
+Remaps                                                        *MDJCustomRemaps*
+
+Please refer to the relevant sections of the |MDJUserGuide| to see how you 
+could interact with the plugin and how to set remaps to your liking.
