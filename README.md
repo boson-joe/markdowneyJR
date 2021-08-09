@@ -9,9 +9,6 @@ Table of contents
 -----------------
 
 + [Description](https://github.com/boson-joe/markdowneyJR#description)
-+ [User Guide](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-User-Guide)
-+ [Customization Guide](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Customization-Guide)
-+ [Contacts](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts)
 + [Navigation Bar](https://github.com/boson-joe/markdowneyJR#navigation-bar)
 
 -----
@@ -37,15 +34,19 @@ There is no need to set remaps for all the formatting options - you can define j
 
 At the moment I can handle basic [basic markdown syntax](https://www.markdownguide.org/basic-syntax/) for you, but if you [write my devs](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts), they would be happy to introduce more features.
 
+Please refer to [this page](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Installation-Guide) if you would like to see advices on installation.
+
+If you would like to join devs please visit [this page](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-development) to see how.
+
 Navigation Bar
 --------------
 
-* [Usage](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-User-Guide)
-* [Customization](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Customization-Guide)
-* [Installation](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Installation-Guide)
-* [License](https://github.com/boson-joe/markdowneyJR/blob/master/license.txt)
-* [Development](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-development)
-* [Contacts](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts)
+[Usage](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-User-Guide) 
+[Customization](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Customization-Guide) 
+[Installation](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Installation-Guide) 
+[License](https://github.com/boson-joe/markdowneyJR/blob/master/license.txt) 
+[Development](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-development) 
+[Contacts](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts) 
 
 -----
 
