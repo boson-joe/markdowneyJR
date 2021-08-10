@@ -17,6 +17,10 @@ let s:markdowneyjr_version = 100
 
 " ---------- Guards
 
+if v:version < 802
+    finish
+endif
+
 if exists("g:MARKDOWNEYJR_plugin_is_loaded")
     finish
 endif
