@@ -6,6 +6,7 @@ Customization guide for MarkdowneyJr Vim plugin.
 Table of contents
 
 * Links contents------------------------------------------------|MDJLinks|
+* Time between keystrokes-----------------------|MDJTimeBetweenKeystrokes|
 * Remaps-------------------------------------------------|MDJCustomRemaps|
 
 ===============================================================================
@@ -54,6 +55,20 @@ write something like that in your vimrc:
 
 After that you will have all regular links in a form that you want. 
 Repeat the same for image links, if you'd like to.
+
+
+===============================================================================
+Time between keystrokes                              *MDJTimeBetweenKeystrokes*
+
+You can set the time the plugin would wait for subsequent keystrokes to toggle
+the available options. Write this in your vimrc:
+
+    let g:MARKDOWNEYJR_time_for_repeated_action = <desired time>
+
+<desired time> should be set to an integer, which is time in milliseconds.
+
+Default time is 1600 milliseconds.
+
 
 ===============================================================================
 Remaps                                                        *MDJCustomRemaps*

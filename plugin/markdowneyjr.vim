@@ -41,6 +41,11 @@ let s:MARKDOWNEYJR_GetPathForImg =
   \get(g:, "MARKDOWNEYJR_GetPathForImg", 
   \function("<SID>MARKDOWNEYJR_GetPathForImg_DEF"))
 
+" Users can define time that plugin will wait for a subsequent keystroke.
+let s:MARKDOWNEYJR_time_for_repeated_action =
+  \get(g:, "MARKDOWNEYJR_time_for_repeated_action",
+  \1600)
+
 endif
 
 
@@ -254,7 +259,7 @@ let s:action_maker_abstract =
 \{
     \'class_name'           :'action_maker_abstract',
     \'repeated_call'        :0,
-    \'time'                 :1000,
+    \'time'                 :s:MARKDOWNEYJR_time_for_repeated_action,
     \'timer'                :0,
     \'action_start'         :0,
     \'action_end'           :0,
