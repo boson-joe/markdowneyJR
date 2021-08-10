@@ -45,7 +45,7 @@ again or do anything else to toggle - just repeat the keystroke (you will
 probably need to finish the repeating stroke with Enter) in a relevantly short 
 time after the first stroke and the plugin would figure out what to do.
 
-Emphasise text (cursive, bold or both):---------------------------*MDJEmphasis*
+Emphasise text (cursive, bold, both or backtick):-----------------*MDJEmphasis*
 
     <plugin's leader>e in normal or visual mode.
 

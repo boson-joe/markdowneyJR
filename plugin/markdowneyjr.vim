@@ -553,7 +553,7 @@ let s:emphasis_maker = Inherit(s:text_action_abstract,
     \'class_name'               :'emphasis_maker',
     \'text_making_strategies'   :
         \[
-            \'*', '**', '***',
+            \'*', '**', '***', '`',
         \],
     \'New'                      :function('<SID>AMNew'), 
     \'MakeText'                 :function('<SID>EMMakeText'),
