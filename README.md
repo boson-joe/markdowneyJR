@@ -30,7 +30,7 @@ There is no need to set remaps for all the formatting options - you can define j
 
 ![bq](https://user-images.githubusercontent.com/85287376/128864401-097e312b-579d-48d4-888d-1340ddb1c5d5.gif "blockquotes")
 
-![emphasis](https://user-images.githubusercontent.com/85287376/128864396-cbd782cd-2417-4fae-91f3-9599dd2c6c30.gif "emphasis")
+![emphasis](https://user-images.githubusercontent.com/85287376/128873480-d0b337ae-3108-4a7b-af2a-3003d30c0981.gif "emphasis")
 
 ![links](https://user-images.githubusercontent.com/85287376/128864388-b37c6a2d-4932-4720-a9c7-786e00b78a23.gif "links")
 
