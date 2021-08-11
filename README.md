@@ -22,17 +22,17 @@ My name is Markdowney Jr, nice to meet you! I am a Vim plugin that makes editing
 
 There is no need to set remaps for all the formatting options - you can define just two remaps in your `vimrc`, and I will take care of the rest. In case you don't want to set any remaps at all, I can give you default ones. You can also remap any or all formatting options to your liking. To see how you can set remaps and customize your experience please refer to the [Customization Guide](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-Customization-Guide).
 
-![headers](https://user-images.githubusercontent.com/85287376/128864392-7fab2f51-eb5b-4b50-8753-cdf6927c74c9.gif "headers")
+![headers](https://user-images.githubusercontent.com/85287376/129064540-a225b0c0-1b08-4f62-bcac-66d28b66950f.gif "headers")
 
-![u_list](https://user-images.githubusercontent.com/85287376/128864376-4f4a849e-4c28-4211-8755-d100a2c931d0.gif "unordered list")
+![u_list](https://user-images.githubusercontent.com/85287376/129064694-7369fa7b-16e0-4850-bbea-1a0f1bed481c.gif "unordered list")
 
-![o_list](https://user-images.githubusercontent.com/85287376/128864384-c8abfc9d-6a58-455f-bb7c-c5522dea0927.gif "ordered list")
+![o_list](https://user-images.githubusercontent.com/85287376/129064669-3e761da4-56ae-4a8d-b816-52f4ba086ece.gif "ordered list")
 
-![bq](https://user-images.githubusercontent.com/85287376/128864401-097e312b-579d-48d4-888d-1340ddb1c5d5.gif "blockquotes")
+![bq](https://user-images.githubusercontent.com/85287376/129064470-b144e250-b81e-4f1a-9084-aaf7dad4a034.gif "blockquotes")
 
-![emphasis](https://user-images.githubusercontent.com/85287376/128873480-d0b337ae-3108-4a7b-af2a-3003d30c0981.gif "emphasis")
+![emphasis](https://user-images.githubusercontent.com/85287376/129064791-81acf754-e3f2-478c-b440-27141d6b4dea.gif "emphasis")
 
-![links](https://user-images.githubusercontent.com/85287376/128864388-b37c6a2d-4932-4720-a9c7-786e00b78a23.gif "links")
+![links](https://user-images.githubusercontent.com/85287376/129064592-fb55ee1d-d4a3-4a99-9633-ef39cffd1b80.gif "links")
 
 At the moment I can handle basic [basic markdown syntax](https://www.markdownguide.org/basic-syntax/) for you, but if you [write my devs](https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-contacts), they would be happy to introduce more features.
 
