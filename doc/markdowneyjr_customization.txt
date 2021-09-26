@@ -8,6 +8,7 @@ Table of contents
 * Links contents------------------------------------------------|MDJLinks|
 * Time between keystrokes-----------------------|MDJTimeBetweenKeystrokes|
 * Remaps-------------------------------------------------|MDJCustomRemaps|
+* Integration with YANP-------------------------------|MDJYanpIntegration|
 
 ===============================================================================
 Links contents                                                       *MDJLinks*
@@ -75,3 +76,13 @@ Remaps                                                        *MDJCustomRemaps*
 
 Please refer to the relevant sections of the |MDJUserGuide| to see how you 
 could interact with the plugin and how to set remaps to your liking.
+
+
+===============================================================================
+Integration with YANP                                      *MDJYanpIntegration*
+
+If you would like to get this plugin work with YANP notetaking plugin, please
+initialize g:MARKDOWNEYJR_integration_with_YANP variable to non-zero in your
+vimrc, for example like this:
+
+    let g:MARKDOWNEYJR_integration_with_YANP = 1

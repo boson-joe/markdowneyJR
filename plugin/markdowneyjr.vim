@@ -11,7 +11,7 @@
 " ':h MDJUserGuide' in Vim or go to the link below to view the User Guide.
 " https://github.com/boson-joe/markdowneyJR/wiki/MarkdowneyJr-User-Guide
 
-let s:markdowneyjr_version = 100
+let s:markdowneyjr_version = 110
 
 
 
@@ -28,13 +28,14 @@ endif
 " This file is loaded twice as definitions of classes` methods
 " should be in place when classes are described - errors otherwise.
 if !exists("g:MARKDOWNEYJR_source_count")
-    let g:MARKDOWNEYJR_source_count = 1
+    let g:MARKDOWNEYJR_source_count = 0
+    let s:MARKDOWNEYJR_max_sources  = 2
 endif
 
 
 
 " ---------- Customization 
-if g:MARKDOWNEYJR_source_count == 0 
+if g:MARKDOWNEYJR_source_count == 1 
 
 " User can define their own functions to determine the full name of the
 " file that is put as an address in a link. Default functions are provided.
@@ -50,6 +51,10 @@ let s:MARKDOWNEYJR_time_for_repeated_action =
   \get(g:, "MARKDOWNEYJR_time_for_repeated_action",
   \1600)
 
+" Allows integration with YANP note taking plugin.
+let s:MARKDOWNEYJR_integration_with_YANP =
+  \get(g:, "MARKDOWNEYJR_integration_with_YANP",
+  \0)
 endif
 
 
@@ -171,13 +176,13 @@ function! Inherit(parent, ...)
     return l:new_class
 endfunction
 
-function! s:VIRTUAL_FUN() dict
+function! s:VIRTUAL_FUN(...) dict
     return 0
 endfunction
 
 
 " START - Vim state class
-if exists("g:MARKDOWNEYJR_VS_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:vim_state = 
 \{
@@ -252,12 +257,11 @@ function! s:VSRestoreState(visitor) dict
     return 1
 endfunction
 
-let g:MARKDOWNEYJR_VS_loaded = 1
 " END - Vim state class
 
 
 " START - Action Maker abstract class
-if exists("g:MARKDOWNEYJR_AM_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:action_maker_abstract = 
 \{
@@ -267,6 +271,7 @@ let s:action_maker_abstract =
     \'timer'                :0,
     \'action_start'         :0,
     \'action_end'           :0,
+    \'send_mes_to_yanp'     :0,
     \'New'                  :function('<SID>VIRTUAL_FUN'),
     \'Copy'                 :function('<SID>AMCopy'),
     \'IsRepeatedCall'       :function('<SID>AMIsRepeated'),
@@ -276,6 +281,7 @@ let s:action_maker_abstract =
     \'UpdateState'          :function('<SID>VIRTUAL_FUN'),
     \'MakeAction'           :function('<SID>VIRTUAL_FUN'),
     \'SetVimState'          :function('<SID>AMSetVimState'),
+    \'SendMesToYANP'        :function('<SID>AMSendMesToYANP'),
 \}
 
 endif
@@ -329,12 +335,15 @@ function! s:AMSetVimState() dict
 	set clipboard= selection=old
 endfunction
 
-let g:MARKDOWNEYJR_AM_loaded = 1
+function! s:AMSendMesToYANP(key) dict
+    eval s:MARKDOWNEYJR_yanp_registry.SubjectAction(a:key)
+endfunction
+
 " END - Action Maker abstract class
 
 
 " START - Wrong Action class
-if exists("g:MARKDOWNEYJR_WA_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:wrong_action = Inherit(s:action_maker_abstract,
 \{
@@ -356,12 +365,11 @@ function! s:WANew() dict
     return deepcopy(s:wrong_action)
 endfunction
 
-let g:MARKDOWNEYJR_WA_loaded = 1
 " END - Wrong Action class
 
 
 " START - Blockquote Maker class
-if exists("g:MARKDOWNEYJR_BQ_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:bq_maker = Inherit(s:action_maker_abstract,
 \{
@@ -395,12 +403,11 @@ function! s:BQMakeBQ() dict
     endwhile
 endfunction
 
-let g:MARKDOWNEYJR_BQ_loaded = 1
 " END - Blockquote Maker class
 
 
 " START - Header Maker class
-if exists("g:MARKDOWNEYJR_HM_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:header_maker = Inherit(s:action_maker_abstract,
 \{
@@ -466,12 +473,11 @@ function! s:HDMakeHD() dict
    eval setpos('.', l:save_cursor)
 endfunction
 
-let g:MARKDOWNEYJR_HM_loaded = 1
 " END - Header Maker class
 
 
 " START - Text action abstract class
-if exists("g:MARKDOWNEYJR_TAA_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:text_action_abstract = Inherit(s:action_maker_abstract,
 \{
@@ -490,6 +496,7 @@ let s:text_action_abstract = Inherit(s:action_maker_abstract,
     \'MakeAction'               :function('<SID>TAAMakeAction'),
     \'RepeatedCallDownTimer'    :function('<SID>TAARepeatedCallDownTimer'),
     \'MakeText'                 :function('<SID>VIRTUAL_FUN'),
+    \'ReplaceTMS'               :function('<SID>TAAReplaceTMS'),
 \}
 \)
 
@@ -535,6 +542,12 @@ function! s:TAAMakeAction() dict
 endfunction
 
 function! s:TAARepeatedCallDownTimer(timerid) dict
+    if self.send_mes_to_yanp
+        let self.send_mes_to_yanp = 0
+        eval self.SendMesToYANP(
+            \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Regular'))
+    endif
+
     let self.action_start = '['
     let self.action_end   = ']'
     
@@ -545,12 +558,16 @@ function! s:TAARepeatedCallDownTimer(timerid) dict
     eval s:action_maker_abstract.RepeatedCallDownTimer(a:timerid, self)
 endfunction
 
-let g:MARKDOWNEYJR_TAA_loaded = 1
+function! s:TAAReplaceTMS(new_TMS) dict
+    unlet self.text_making_strategies
+    let self.text_making_strategies = a:new_TMS
+endfunction
+
 " END - Text action abstract class
 
 
 " START - Emphasis Maker class
-if exists("g:MARKDOWNEYJR_EM_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:emphasis_maker = Inherit(s:text_action_abstract,
 \{
@@ -576,16 +593,16 @@ function! s:EMMakeText() dict
     return l:text[0] .. SurroundText(l:text[1], l:sur, l:sur) .. l:text[2]
 endfunction
 
-let g:MARKDOWNEYJR_EM_loaded = 1
 " END - Emphasis Maker class
 
 
 " START - Link Maker class
-if exists("g:MARKDOWNEYJR_LM_loaded")
 
+if g:MARKDOWNEYJR_source_count == 1 
 let s:link_maker = Inherit(s:text_action_abstract,
 \{
     \'class_name'               :'link_maker',
+    \'last_path'                :'',
     \'text_making_strategies'   :
         \[
             \function("<SID>GetRegularLink", [s:MARKDOWNEYJR_GetPathForUrl]),
@@ -593,6 +610,8 @@ let s:link_maker = Inherit(s:text_action_abstract,
         \],
     \'New'                      :function('<SID>AMNew'), 
     \'MakeText'                 :function('<SID>LMMakeText'),
+    \'SaveLastPath'             :function('<SID>LMSaveLastPath'),
+    \'GetLastPath'              :function('<SID>LMGetLastPath'),
 \}
 \)
 
@@ -607,6 +626,14 @@ function! s:LMMakeText() dict
     let l:Strt = self.text_making_strategies[self.text_strategies_idx]
 
     return l:text[0] .. l:Strt(l:text[1]) .. l:text[2]
+endfunction
+
+function! s:LMSaveLastPath(path) dict
+    let self.last_path = copy(a:path)
+endfunction
+
+function! s:LMGetLastPath() dict
+    return copy(self.last_path)
 endfunction
 
 " Class helper functions
@@ -626,26 +653,40 @@ function! s:MARKDOWNEYJR_GetPathForUrl_DEF()
     endif
 endfunction
 
-function! s:GetRegularLink(GetFPath, f_name)
-    let l:f_name = ReplaceBlanksWithUnderscore(a:f_name)
-    return <SID>GetLinkForm(a:GetFPath() .. '/' .. l:f_name, a:f_name)
+function! s:GetRegularLink(GetFPath, f_name, ...)
+    let l:f_path = a:GetFPath()
+    let l:f_name = a:f_name
+
+    if !empty(a:f_name)
+        let l:f_path = l:f_path .. '/' .. ReplaceBlanksWithUnderscore(a:f_name)    
+    endif
+
+    if a:0 != 0
+        let l:f_name = a:1 
+    endif
+
+    eval s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+                \.SaveLastPath(l:f_path) 
+    return <SID>GetLinkForm(l:f_path, l:f_name)
 endfunction
 
-function! s:GetImgLink(GetIPath, i_name)
+function! s:GetImgLink(GetIPath, i_name, ...)
     let l:i_name = ReplaceBlanksWithUnderscore(a:i_name)
-    return '!' .. <SID>GetLinkForm(a:GetIPath() .. '/' .. l:i_name, a:i_name)
+    let l:i_path = a:GetIPath() .. '/' .. l:i_name
+    eval s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+                \.SaveLastPath(l:i_path) 
+    return '!' .. <SID>GetLinkForm(l:i_path, a:i_name)
 endfunction
 
-function! s:GetLinkForm(f_abs_path, alt_text)
+function! s:GetLinkForm(f_abs_path, alt_text, ...)
     return "["..a:alt_text.."]("..a:f_abs_path..")" 
 endfunction
 
-let g:MARKDOWNEYJR_LM_loaded = 1
 " END - Link Maker class
 
 
 " START - List Maker abstract class
-if exists("g:MARKDOWNEYJR_LMA_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:list_maker_abstract = Inherit(s:action_maker_abstract,
 \{
@@ -781,12 +822,11 @@ function! s:LMAUpdateState() dict
     eval setpos('.', l:save_cursor)
 endfunction
 
-let g:MARKDOWNEYJR_LMA_loaded = 1
 " END - List Maker abstract class
 
 
 " START - Unordered List Maker class
-if exists("g:MARKDOWNEYJR_UL_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:list_maker_u = Inherit(s:list_maker_abstract,
 \{
@@ -822,12 +862,11 @@ function! s:ULPrevLineIsPartOfList() dict
     return (self.prev_line_info[1][0] ==# '+')
 endfunction
 
-let g:MARKDOWNEYJR_UL_loaded = 1
 " END - Unordered List Maker class
 
 
 " START - Ordered List Maker class
-if exists("g:MARKDOWNEYJR_OL_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:list_maker_o = Inherit(s:list_maker_abstract,
 \{
@@ -939,12 +978,11 @@ function! s:OLContinueTransform() dict
     eval setpos('.', l:save_cursor)
 endfunction
 
-let g:MARKDOWNEYJR_OL_loaded = 1
 " END - Ordered List Maker class
 
 
 " START - Text Manipulator Abstract class
-if exists("g:MARKDOWNEYJR_TMA_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:text_manipulator_abstract = Inherit(s:action_maker_abstract,
 \{
@@ -980,7 +1018,7 @@ endfunction
 
 function! s:TMARepeatedCallDownTimer(timerid) dict
     " Cannot unlet self, unfortunately. 
-    " Hope garbage collector doest its job.
+    " Hope garbage collector does its job.
 endfunction
 
 function! s:TMAGetText() dict
@@ -991,12 +1029,11 @@ function! s:TMASetVimState() dict
     " leave it empty
 endfunction
 
-let g:MARKDOWNEYJR_TMA_loaded = 1
 " END - Text Manipulator Abstract class
 
 
 " START - Text Retriever class
-if exists("g:MARKDOWNEYJR_TT_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:text_retriever = Inherit(s:text_manipulator_abstract,
 \{
@@ -1035,12 +1072,11 @@ function! s:TTGetCleanText() dict
     let self.text = ExchaustWrongChars(self.text, function("IsAlpha"))
 endfunction
 
-let g:MARKDOWNEYJR_TT_loaded = 1
 " END - Text Retriever class
 
 
 " START - Text Remover class
-if exists("g:MARKDOWNEYJR_TR_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:text_remover = Inherit(s:text_manipulator_abstract,
 \{
@@ -1066,12 +1102,11 @@ function! s:TRMakeAction() dict
     let self.text        = l:ret
 endfunction
 
-let g:MARKDOWNEYJR_TR_loaded = 1
 " END - Text Remover class
 
 
 " START - Text Inserter class
-if exists("g:MARKDOWNEYJR_TI_loaded")
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:text_inserter = Inherit(s:text_manipulator_abstract,
 \{
@@ -1102,12 +1137,11 @@ function! s:TIToggleRepeatedCall() dict
     "leave it empty
 endfunction
 
-let g:MARKDOWNEYJR_TI_loaded = 1
 " END - Text Inserter class
 
 
 " START - Action Maker Generator class
-if g:MARKDOWNEYJR_source_count == 0
+if g:MARKDOWNEYJR_source_count == 1 
 
 let s:MARKDOWNEYJR_action_maker_factory =
 \ {
@@ -1333,10 +1367,228 @@ endfunction
 
 
 
+" ---------- YANP plugin integration
+
+
+" START - YANP Integrator class
+if g:MARKDOWNEYJR_source_count == 1 
+
+let s:yanp_integrator = 
+\{
+    \'class_name'           :'yanp_integrator',
+    \'prototypes_factory'   :0,
+    \'link_to_return'       :'',
+    \'unique_instance'      :{},
+    \'Instance'             :function('<SID>YIInstance'),
+    \'GetLink'              :0,
+    \'Integrate'            :0,
+    \'SourceYanp'           :0,
+\}
+
+endif
+
+function! s:YIIntegrate() dict
+    if !exists("g:YANP_plugin_is_loaded") || !g:YANP_plugin_is_loaded
+        eval self.SourceYanp()
+    endif
+
+    let s:MARKDOWNEYJR_yanp_registry = g:YANP_syntax_mediator.Instance()
+    let s:MARKDOWNEY_yanp_subject    = g:YANP_subject.New(
+                \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Regular'),
+                \function('<SID>YIGetLink'))
+
+    eval s:MARKDOWNEYJR_yanp_registry.RegisterAsSubject(
+                \s:MARKDOWNEY_yanp_subject)
+    
+    eval s:InitYANPCommands()
+    eval s:InitYANPVariables()
+endfunction
+
+function! s:YIGetLink() dict
+    let _self          = s:yanp_integrator.Instance()
+    let l:action_maker = 
+        \_self.prototypes_factory.GetActionMaker('link_maker')
+
+    return l:action_maker.GetLastPath()
+endfunction
+
+function! s:YISourceYANP() dict
+    let l:runtimepaths = split(&runtimepath, ",") 
+    let l:ret = 0
+
+    for p in l:runtimepaths
+        let l:yanp = p..'/plugin/yanp.vim'
+        if !empty(glob(l:yanp))
+            eval execute("source " .. l:yanp)
+            let l:ret = 1
+        endif
+    endfor
+
+    unlet l:runtimepaths
+    unlet l:yanp
+
+    return l:ret
+endfunction
+
+function! s:YIInstance() dict
+    if empty(self.unique_instance)
+        let self.unique_instance = {'i':1}
+        let l:unique_instance    = deepcopy(self)
+       
+        let l:unique_instance.prototypes_factory = 
+                    \s:MARKDOWNEYJR_action_maker_factory 
+
+        let l:unique_instance.Instance  = 0
+        let l:unique_instance.Integrate = function('<SID>YIIntegrate')
+        let l:unique_instance.GetLink   = function('<SID>YIGetLink')
+        let l:unique_instance.SourceYanp= function('<SID>YISourceYANP')
+
+        let self.unique_instance = l:unique_instance 
+    endif
+
+    return self.unique_instance
+endfunction
+
+" END - YANP Integrator class
+
+
+" YANP integration functions for performing syntax manipulations
+
+function! s:InitYANPCommands()
+    vnoremap <Plug>YanpRegularFile 
+                \:<c-u>call <SID>HandleRegularLinkForYANP(visualmode())<cr>
+    nnoremap <Plug>YanpRegularFile 
+                \:set operatorfunc=<SID>HandleRegularLinkForYANP<cr>g@
+
+    vnoremap <Plug>YanpImage 
+                \:<c-u>call <SID>HandleImgLinkForYANP(visualmode())<cr>
+    nnoremap <Plug>YanpImage 
+                \:set operatorfunc=<SID>HandleImgLinkForYANP<cr>g@
+
+    vnoremap <Plug>YanpIndexFile 
+                \:<c-u>call <SID>HandleIndexLinkForYANP(visualmode())<cr>
+    nnoremap <Plug>YanpIndexFile 
+                \:set operatorfunc=<SID>HandleIndexLinkForYANP<cr>g@
+
+    vnoremap <Plug>YanpSelectedPath 
+                \:<c-u>call <SID>HandleSelectiveLinkForYANP(visualmode())<cr>
+    nnoremap <Plug>YanpSelectedPath 
+                \:set operatorfunc=<SID>HandleSelectiveLinkForYANP<cr>g@
+endfunction
+
+function! s:InitYANPVariables()
+    let g:YANP_GetRegularLinkToThis = function("<SID>GetRegularLinkForYanp")
+endfunction
+            
+function! s:HandleRegularLinkForYANP(type)
+    eval s:MARKDOWNEY_yanp_subject.ChangeObserver(
+                \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Regular'))
+
+    let l:action_maker = 
+          \s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+    eval l:action_maker.ReplaceTMS(
+          \[function('<SID>GetRegularLink', 
+              \[g:YANP_access_facade.Instance().GetRefToDictPathForRegFile()])
+          \])
+
+    let l:action_maker.send_mes_to_yanp = 1
+    if IsVisualSelection(a:type)
+        eval <SID>MakeMarkdowneyJrDoSomething('<', '>', l:action_maker)
+    else
+        eval <SID>MakeMarkdowneyJrDoSomething('[', ']', l:action_maker) 
+    endif
+endfunction
+
+function! s:HandleImgLinkForYANP(type)
+    eval s:MARKDOWNEY_yanp_subject.ChangeObserver(
+                \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Image'))
+    
+    let l:action_maker = 
+          \s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+    eval l:action_maker.ReplaceTMS(
+          \[function("<SID>GetImgLink", 
+              \[g:YANP_access_facade.Instance().GetRefToDictPathForImg()])
+          \])
+
+    let l:action_maker.send_mes_to_yanp = 1
+    if IsVisualSelection(a:type)
+        eval <SID>MakeMarkdowneyJrDoSomething('<', '>', l:action_maker)
+    else
+        eval <SID>MakeMarkdowneyJrDoSomething('[', ']', l:action_maker) 
+    endif
+endfunction
+
+function! s:HandleIndexLinkForYANP(type)
+    eval s:MARKDOWNEY_yanp_subject.ChangeObserver(
+                \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Index'))
+
+    let l:action_maker = 
+          \s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+    eval l:action_maker.ReplaceTMS(
+          \[function("<SID>GetIndexLink", 
+              \[g:YANP_access_facade.Instance().GetRefToPathForIndexFile()])
+          \])
+
+    let l:action_maker.send_mes_to_yanp = 1
+    if IsVisualSelection(a:type)
+        eval <SID>MakeMarkdowneyJrDoSomething('<', '>', l:action_maker)
+    else
+        eval <SID>MakeMarkdowneyJrDoSomething('[', ']', l:action_maker) 
+    endif
+endfunction
+
+function! s:HandleSelectiveLinkForYANP(type)
+    let l:action = g:YANP_path_selector.New(
+            \function('<SID>HandleSelectiveLinkForYANP_Callback', [a:type]),
+            \g:YANP_access_facade.Instance().GetRefToPathSelectorGetter()
+        \)
+
+    eval l:action.MakeAction()
+endfunction
+
+function! s:GetIndexLink(GetIPath, i_name)
+    let l:i_name = ReplaceBlanksWithUnderscore(a:i_name)
+    let l:i_path = a:GetIPath(l:i_name)
+    eval s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+                \.SaveLastPath(l:i_path) 
+    return <SID>GetLinkForm(l:i_path, a:i_name)
+endfunction
+
+function! s:GetRegularLinkForYanp(file_path)
+    return s:GetLinkForm(a:file_path, fnamemodify(a:file_path, ":t"))
+endfunction
+
+function! s:HandleSelectiveLinkForYANP_Callback(type) dict
+    eval s:MARKDOWNEY_yanp_subject.ChangeObserver(
+                \s:MARKDOWNEYJR_yanp_registry.GetCorrectKey('Selective'))
+
+    let l:action_maker = 
+          \s:MARKDOWNEYJR_action_maker_factory.GetActionMaker('link_maker')
+    eval l:action_maker.ReplaceTMS([
+             \function("<SID>GetRegularLink", [ 
+                 \function('<SID>GetSelectivePath', [self.selection]),
+                 \''
+             \])
+         \])
+
+    let l:action_maker.send_mes_to_yanp = 1
+    if IsVisualSelection(a:type)
+        eval <SID>MakeMarkdowneyJrDoSomething('<', '>', l:action_maker)
+    else
+        eval <SID>MakeMarkdowneyJrDoSomething('[', ']', l:action_maker) 
+    endif
+endfunction
+
+function! s:GetSelectivePath(path, ...)
+    return YANP_CorrectPathIfNeeded(a:path)
+endfunction
+
+
+
 " ---------- Plugin's main function
 
-if g:MARKDOWNEYJR_source_count > 0
-    let g:MARKDOWNEYJR_source_count -= 1
+let g:MARKDOWNEYJR_source_count += 1
+if g:MARKDOWNEYJR_source_count < s:MARKDOWNEYJR_max_sources
     source <sfile>
 else
     let g:MARKDOWNEYJR_Vim_state = s:vim_state.MakeSingleton()
@@ -1352,22 +1604,11 @@ else
         \)
 
     let g:MARKDOWNEYJR_plugin_is_loaded = 1
+
+    if s:MARKDOWNEYJR_integration_with_YANP
+        let s:integrator_with_yanp = 
+            \s:yanp_integrator.Instance()
+        eval s:integrator_with_yanp.Integrate()
+    endif
 endif
-
-
-
-" ---------- DEBUG functions
-
-function! MARKDOWNEYJR_echom_factory_registries()
-    echom "OBJECTS"
-    for [k, o] in items(s:MARKDOWNEYJR_action_maker_factory.objects_registry)
-        echom o.class_name
-    endfor
-
-    echom "PROTOTYPES"
-    for [k, p] in items(s:MARKDOWNEYJR_action_maker_factory.prototypes_registry)
-        echom p.class_name
-    endfor
-     
-endfunction
 
